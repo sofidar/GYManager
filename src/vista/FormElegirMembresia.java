@@ -54,7 +54,6 @@ public class FormElegirMembresia {
         btnCompleto.addActionListener(e -> procesarMembresia("Completo"));
     }
 
-
     private void procesarMembresia(String tipoMembresia) {
         Membresia m = membresias.stream()
                 .filter(mem -> mem.getTipo().equals(tipoMembresia))
@@ -66,40 +65,20 @@ public class FormElegirMembresia {
             return;
         }
 
-        LocalDate inicio = LocalDate.now();
-        LocalDate fin = inicio.plusMonths(m.getDuracionMeses());
-
         try {
-            conexionSocios conexion = new conexionSocios();
+            m.aplicar(nombre, correo, contrasena, socioExistente, esActualizacion);
 
-            if (esActualizacion) {
-                // 🔄 Actualizar socio existente
-                String sql = "UPDATE socios SET idMembresia = ?, fechaInicio = ?, fechaFin = ? WHERE idSocio = ?";
-                try (Connection con = conexion.conexionBBDD();
-                     PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                    ps.setInt(1, m.getIdMembresia());
-                    ps.setDate(2, java.sql.Date.valueOf(inicio));
-                    ps.setDate(3, java.sql.Date.valueOf(fin));
-                    ps.setInt(4, socioExistente.getId());
-                    ps.executeUpdate();
-                }
+            String mensaje = esActualizacion
+                    ? "Membresía actualizada a " + m.getTipo()
+                    : "Socio creado con membresía " + m.getTipo();
 
-                JOptionPane.showMessageDialog(panelPrincipal, "Membresía actualizada a " + m.getTipo());
-
-            } else {
-                // ✅ Crear nuevo socio
-                Socio nuevoSocio = new Socio(0, nombre, correo, contrasena, m, inicio, fin);
-                conexion.insertarSocio(nuevoSocio);
-                JOptionPane.showMessageDialog(panelPrincipal, "Socio creado con membresía " + m.getTipo());
-            }
-
+            JOptionPane.showMessageDialog(panelPrincipal, mensaje);
             SwingUtilities.getWindowAncestor(panelPrincipal).dispose();
 
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(panelPrincipal, "Error al procesar membresía: " + ex.getMessage());
+            JOptionPane.showMessageDialog(panelPrincipal, "Error al aplicar membresía: " + ex.getMessage());
         }
     }
-
 
     public JPanel getPanelPrincipal() {
         return panelPrincipal;

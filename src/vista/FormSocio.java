@@ -6,6 +6,7 @@ import modelo.Membresia;
 
 import javax.swing.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 public class FormSocio {
 
@@ -36,6 +37,7 @@ public class FormSocio {
         this.membresia = socio.getMembresia();
 
         // Inicializar etiquetas de membresía
+        Map<String, String> datos = membresia.actualizarMembresia(socio);
         actualizarMembresia();
 
         // Evento para renovar membresía
@@ -45,23 +47,15 @@ public class FormSocio {
         btnBajaMembresia.addActionListener(e -> bajaMembresia());
     }
 
-    public FormSocio() {
-
-    }
-
 
     private void actualizarMembresia() {
         if (membresia != null) {
-            lblTipoMembresia.setText("Tipo de Membresía: " + membresia.getTipo());
-            lblFechaInicio.setText("Inicio: " + socio.getFechaInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-            lblFechaFin.setText("Fin: " + socio.getFechaFin().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        } else {
-            lblTipoMembresia.setText("Sin membresía");
-            lblFechaInicio.setText("-");
-            lblFechaFin.setText("-");
+            Map<String, String> datos = membresia.actualizarMembresia(socio);
+            lblTipoMembresia.setText(datos.get("tipo"));
+            lblFechaInicio.setText(datos.get("inicio"));
+            lblFechaFin.setText(datos.get("fin"));
         }
     }
-
 
     private void abrirFormElegirMembresia() {
         JFrame elegirFrame = new JFrame("Elegir nueva membresía");
@@ -69,26 +63,32 @@ public class FormSocio {
         elegirFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         elegirFrame.pack();
         elegirFrame.setLocationRelativeTo(null);
+
+        elegirFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                // Refrescar datos del socio desde la base de datos cuando cierra la ventana
+                membresia = socio.getMembresia();
+                actualizarMembresia();
+            }
+        });
+
         elegirFrame.setVisible(true);
     }
 
-
     private void bajaMembresia() {
         int confirm = JOptionPane.showConfirmDialog(panelPrincipal,
-                "Estás seguro de que querés darte de baja? Esta acción eliminará tu cuenta.",
+                "¿Estás seguro de que querés darte de baja? Esta acción eliminará tu cuenta.",
                 "Confirmar baja",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
-            conexionSocios conexion = new conexionSocios();
-            conexion.eliminarSocio(socio.getId());
-
+            socio.darseDeBaja(); // delega al modelo
             JOptionPane.showMessageDialog(panelPrincipal, "Tu cuenta fue eliminada correctamente.");
             JFrame ventana = (JFrame) SwingUtilities.getWindowAncestor(panelPrincipal);
-            ventana.dispose(); // cerrar la ventana actual
+            ventana.dispose();
         }
     }
-
 
     public JPanel getPanelPrincipal() {
         return panelPrincipal;

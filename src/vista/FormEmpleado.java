@@ -1,9 +1,7 @@
 package vista;
 
-import datos.conexionSectores;
-import datos.conexionSocios;
-import datos.conexionActividades;
-import modelo.Sector;
+import datos.*;
+import modelo.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -91,80 +89,55 @@ public class FormEmpleado {
 
         try {
             int capacidad = Integer.parseInt(capacidadTexto);
-
-            // Tomar el sector seleccionado
             Sector seleccionado = (Sector) comboSector.getSelectedItem();
+
             if (seleccionado == null) {
                 JOptionPane.showMessageDialog(panelPrincipal, "Selecciona un sector.");
                 return;
             }
 
-            int idSector = seleccionado.getIdSector();
-
-            // Conexión y creación de actividad en la base de datos
-            conexionActividades conexion = new conexionActividades();
-            Connection conn = conexion.conexionBBDD();
-
-            String sql = "INSERT INTO actividades (nombre, horario, idSector, capacidad) VALUES (?, ?, ?, ?)";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, nombre);
-            ps.setString(2, horario);
-            ps.setInt(3, idSector);
-            ps.setInt(4, capacidad);
-            ps.executeUpdate();
-
-            JOptionPane.showMessageDialog(panelPrincipal, "Actividad creada correctamente.");
-
-            // Limpiar campos
-            txtNombreActividad.setText("");
-            txtHorarioActividad.setText("");
-            txtCapacidad.setText("");
-
-            conn.close();
-
-            // Recargar tabla de actividades
-            cargarActividades();
+            Actividad nueva = new Actividad(nombre, horario, seleccionado, capacidad);
+            if (nueva.crear()) {
+                JOptionPane.showMessageDialog(panelPrincipal, "Actividad creada correctamente.");
+                txtNombreActividad.setText("");
+                txtHorarioActividad.setText("");
+                txtCapacidad.setText("");
+                cargarActividades();
+            } else {
+                JOptionPane.showMessageDialog(panelPrincipal, "Error al crear actividad.");
+            }
 
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(panelPrincipal, "La capacidad debe ser un número.");
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(panelPrincipal, "Error al crear actividad: " + ex.getMessage());
         }
     }
-
-
 
     private void cargarActividades() {
         modeloActividades.setRowCount(0);
-        conexionActividades conexion = new conexionActividades();
+        areaActividades.setText("");
 
-        try (Connection conn = conexion.conexionBBDD()) {
-            String sql = "SELECT * FROM actividades";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+        List<Actividad> actividades = Actividad.listar();
 
-            areaActividades.setText("");
-            while (rs.next()) {
-                Object[] fila = {
-                        rs.getInt("idActividad"),
-                        rs.getString("nombre"),
-                        rs.getString("horario"),
-                        rs.getInt("idSector"),
-                        rs.getInt("capacidad")
-                };
-                modeloActividades.addRow(fila);
-                areaActividades.append(rs.getString("nombre") + " - " + rs.getString("horario") + "\n");
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(panelPrincipal, "Error al cargar actividades: " + ex.getMessage());
+        for (Actividad act : actividades) {
+            Object[] fila = {
+                    act.getIdActividad(),
+                    act.getNombre(),
+                    act.getHorario(),
+                    act.getSector().getNombre(),
+                    act.getCapacidad()
+            };
+            modeloActividades.addRow(fila);
+            areaActividades.append(act.getNombre() + " - " + act.getHorario() + "\n");
         }
     }
+
 
     private void actualizarActividades(ActionEvent e) {
         cargarActividades();
     }
 
     private void eliminarActividad(ActionEvent e) {
+
         int fila = tablaActividades.getSelectedRow();
         if (fila == -1) {
             JOptionPane.showMessageDialog(panelPrincipal, "Selecciona una actividad para eliminar.");
@@ -172,20 +145,26 @@ public class FormEmpleado {
         }
 
         int idActividad = (int) modeloActividades.getValueAt(fila, 0);
+        String nombre = (String) modeloActividades.getValueAt(fila, 1);
+        String horario = (String) modeloActividades.getValueAt(fila, 2);
+        String sectorNombre = (String) modeloActividades.getValueAt(fila, 3);
+        int capacidad = (int) modeloActividades.getValueAt(fila, 4);
 
-        conexionActividades conexion = new conexionActividades();
-        try (Connection conn = conexion.conexionBBDD()) {
-            String sql = "DELETE FROM actividades WHERE idActividad = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, idActividad);
-            ps.executeUpdate();
+        // Crear sector ficticio (solo para cumplir con constructor)
+        Sector sector = new Sector(0, sectorNombre, 0); // id y capacidad no usados
 
+        Actividad act = new Actividad(idActividad, nombre, horario, sector, capacidad);
+
+        System.out.println("ID desde tabla: " + idActividad);
+
+        if (act.eliminar()) {
             JOptionPane.showMessageDialog(panelPrincipal, "Actividad eliminada correctamente.");
             cargarActividades();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(panelPrincipal, "Error al eliminar actividad: " + ex.getMessage());
+        } else {
+            JOptionPane.showMessageDialog(panelPrincipal, "Error al eliminar actividad.");
         }
     }
+
 
     // ==============================
 // PESTAÑA SOCIOS
@@ -203,35 +182,19 @@ public class FormEmpleado {
 
     private void cargarSocios() {
         modeloSocios.setRowCount(0);
-        conexionSocios conexion = new conexionSocios();
 
-        try (Connection conn = conexion.conexionBBDD()) {
-            // Hacer JOIN para obtener el tipo de membresía
-            String sql = "SELECT s.idSocio, s.nombre, s.correo, m.tipo AS membresia " +
-                    "FROM socios s " +
-                    "JOIN membresias m ON s.idMembresia = m.idMembresia";
+        List<Socio> socios = Socio.listar();
 
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-
-            // Limpiar la tabla
-            modeloSocios.setRowCount(0);
-
-            while (rs.next()) {
-                Object[] fila = {
-                        rs.getInt("idSocio"),
-                        rs.getString("nombre"),
-                        rs.getString("correo"),
-                        rs.getString("membresia") // nombre de la membresía
-                };
-                modeloSocios.addRow(fila);
-            }
-
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(panelPrincipal, "Error al cargar socios: " + ex.getMessage());
+        for (Socio s : socios) {
+            Object[] fila = {
+                    s.getId(),
+                    s.getNombre(),
+                    s.getCorreo(),
+                    s.getMembresia().getTipo()
+            };
+            modeloSocios.addRow(fila);
         }
     }
-
 
     private void actualizarSocios(ActionEvent e) {
         cargarSocios();
@@ -245,20 +208,22 @@ public class FormEmpleado {
         }
 
         int idSocio = (int) modeloSocios.getValueAt(fila, 0);
+        String nombre = (String) modeloSocios.getValueAt(fila, 1);
+        String correo = (String) modeloSocios.getValueAt(fila, 2);
+        String tipoMembresia = (String) modeloSocios.getValueAt(fila, 3);
 
-        conexionSocios conexion = new conexionSocios();
-        try (Connection conn = conexion.conexionBBDD()) {
-            String sql = "DELETE FROM socios WHERE idSocio = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, idSocio);
-            ps.executeUpdate();
+        // Crear socio mínimo para eliminar
+        Membresia membresia = new Membresia(0, tipoMembresia, 0); // id y duración ficticios
+        Socio socio = new Socio(idSocio, nombre, correo, "", membresia, null, null);
 
+        if (socio.eliminar()) {
             JOptionPane.showMessageDialog(panelPrincipal, "Socio eliminado correctamente.");
             cargarSocios();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(panelPrincipal, "Error al eliminar socio: " + ex.getMessage());
+        } else {
+            JOptionPane.showMessageDialog(panelPrincipal, "Error al eliminar socio.");
         }
     }
+
 
     public JPanel getPanelPrincipal() {
         return panelPrincipal;

@@ -85,30 +85,24 @@ public class conexionSocios {
 
     // ------------------------------------------
     // Insertar socio
-    public void insertarSocio(Socio socio) {
-        String sql = "INSERT INTO socios (nombre, correo, contrasena, idMembresia, fechaInicio, fechaFin) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection con = conexionBBDD();
-             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
+    public boolean insertarSocio(Socio socio) {
+        try (Connection con = conexionBBDD()) {
+            String sql = "INSERT INTO socios (nombre, correo, contrasena, idMembresia, fechaInicio, fechaFin) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, socio.getNombre());
             ps.setString(2, socio.getCorreo());
             ps.setString(3, socio.getContrasena());
             ps.setInt(4, socio.getMembresia().getIdMembresia());
-            ps.setDate(5, Date.valueOf(socio.getFechaInicio()));
-            ps.setDate(6, Date.valueOf(socio.getFechaFin()));
-
+            ps.setDate(5, java.sql.Date.valueOf(socio.getFechaInicio()));
+            ps.setDate(6, java.sql.Date.valueOf(socio.getFechaFin()));
             ps.executeUpdate();
-
-            // Obtener id generado
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                socio.setIdSocio(rs.getInt(1));
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error al insertarSocio: " + e);
+            return true;
+        } catch (Exception ex) {
+            System.err.println("Error al insertar socio: " + ex.getMessage());
+            return false;
         }
     }
+
 
     // ------------------------------------------
     // Modificar socio

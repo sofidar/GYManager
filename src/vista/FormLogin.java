@@ -34,7 +34,7 @@ public class FormLogin {
         }
 
         // Intentar login como empleado primero
-        if (verificarEmpleado(correo, contrasena)) {
+        if (Empleado.verificar(correo, contrasena)) {
             JOptionPane.showMessageDialog(panelPrincipal, "Inicio de sesion exitoso como EMPLEADO.");
             JFrame empleadoFrame = new JFrame("Panel Empleado");
             empleadoFrame.setContentPane(new FormEmpleado().getPanelPrincipal());
@@ -47,7 +47,7 @@ public class FormLogin {
         }
 
         // Si no es empleado, intentar como socio
-        Socio socioLogueado = verificarSocio(correo, contrasena);
+        Socio socioLogueado = Socio.verificar(correo, contrasena);
         if (socioLogueado != null) {
             JOptionPane.showMessageDialog(panelPrincipal, "Inicio de sesión exitoso como SOCIO.");
             JFrame socioFrame = new JFrame("Panel Socio");
@@ -63,61 +63,6 @@ public class FormLogin {
 
         JOptionPane.showMessageDialog(panelPrincipal, "Correo o contraseña incorrectos.");
     }
-
-    private boolean verificarEmpleado(String correo, String contrasena) {
-        conexionEmpleados conexion = new conexionEmpleados();
-        try (Connection conn = conexion.conexionBBDD()) {
-            String sql = "SELECT * FROM empleados WHERE correo = ? AND contrasena = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, correo);
-            ps.setString(2, contrasena);
-            ResultSet rs = ps.executeQuery();
-            return rs.next(); // existe el empleado
-        } catch (Exception ex) {
-            System.err.println("Error al verificar empleado: " + ex.getMessage());
-            return false;
-        }
-    }
-
-    private Socio verificarSocio(String correo, String contrasena) {
-        conexionSocios conexion = new conexionSocios();
-        conexionMembresias conexionMembresias = new conexionMembresias();
-        Socio socio = null;
-
-        try (Connection conn = conexion.conexionBBDD()) {
-            String sql = "SELECT * FROM socios WHERE correo = ? AND contrasena = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, correo);
-            ps.setString(2, contrasena);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                int id = rs.getInt("idSocio");
-                int idMembresia = rs.getInt("idMembresia");
-                Date fechaInicio = rs.getDate("fechaInicio");
-                Date fechaFin = rs.getDate("fechaFin");
-
-                Membresia membresia = conexionMembresias.obtenerMembresia(idMembresia);
-
-                socio = new Socio(
-                        id,
-                        rs.getString("nombre"),
-                        correo,
-                        contrasena,
-                        membresia,
-                        fechaInicio != null ? fechaInicio.toLocalDate() : null,
-                        fechaFin != null ? fechaFin.toLocalDate() : null
-                );
-            }
-
-        } catch (Exception ex) {
-            System.err.println("Error al verificar socio: " + ex.getMessage());
-        }
-
-        return socio;
-    }
-
-
 
     public JPanel getPanelPrincipal() {
         return panelPrincipal;

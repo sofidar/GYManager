@@ -2,7 +2,7 @@ package vista;
 
 import datos.conexionEmpleados;
 import datos.conexionSocios;
-import modelo.Empleado;
+import modelo.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -42,34 +42,29 @@ public class FormCrearUsuario {
         }
 
         if (tipo.equals("Socio")) {
+            conexionSocios cs = new conexionSocios();
             if (cs.existeSocio(correo)) {
                 JOptionPane.showMessageDialog(panelPrincipal, "El correo ya está registrado");
                 return;
             }
 
-            // Crear un nuevo JFrame para elegir membresía
             JFrame frame = new JFrame("Elegir Membresía");
             FormElegirMembresia formM = new FormElegirMembresia(nombre, correo, contrasena);
-
             frame.setContentPane(formM.getPanelPrincipal());
-            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // cierra solo esta ventana
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.pack();
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
 
-        } else { // Empleado
-            if (ce.existeEmpleado(correo)) {
+        } else {
+            Usuario empleado = new Empleado(nombre, correo, contrasena);
+            if (empleado.crear()) {
+                JOptionPane.showMessageDialog(panelPrincipal, "Empleado registrado correctamente");
+            } else {
                 JOptionPane.showMessageDialog(panelPrincipal, "El correo ya está registrado");
-                return;
             }
-
-            // Crear empleado sin id (DB asigna auto-increment)
-            Empleado emp = new Empleado(nombre, correo, contrasena);
-            ce.insertarEmpleado(emp);
-            JOptionPane.showMessageDialog(panelPrincipal, "Empleado registrado correctamente");
         }
 
-        // Limpiar campos
         txtNombre.setText("");
         txtCorreo.setText("");
         pwdContrasena.setText("");
