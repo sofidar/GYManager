@@ -26,13 +26,14 @@ public class Empleado extends Usuario {
         return true;
     }
 
-    public static boolean verificar(String correo, String contrasena) {
+    @Override
+    public boolean verificar() {
         conexionEmpleados conexion = new conexionEmpleados();
         try (Connection conn = conexion.conexionBBDD()) {
             String sql = "SELECT * FROM empleados WHERE correo = ? AND contrasena = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, correo);
-            ps.setString(2, contrasena);
+            ps.setString(1, this.correo);
+            ps.setString(2, this.contrasena);
             ResultSet rs = ps.executeQuery();
             return rs.next();
         } catch (Exception ex) {
@@ -40,6 +41,7 @@ public class Empleado extends Usuario {
             return false;
         }
     }
+
 
     // Método propio de empleado
     public String getTipo() {

@@ -34,8 +34,9 @@ public class FormLogin {
         }
 
         // Intentar login como empleado primero
-        if (Empleado.verificar(correo, contrasena)) {
-            JOptionPane.showMessageDialog(panelPrincipal, "Inicio de sesion exitoso como EMPLEADO.");
+        Empleado empleado = new Empleado(0, "", correo, contrasena);
+        if (empleado.verificar()) {
+            JOptionPane.showMessageDialog(panelPrincipal, "Inicio de sesión exitoso como EMPLEADO.");
             JFrame empleadoFrame = new JFrame("Panel Empleado");
             empleadoFrame.setContentPane(new FormEmpleado().getPanelPrincipal());
             empleadoFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -46,9 +47,10 @@ public class FormLogin {
             return;
         }
 
+
         // Si no es empleado, intentar como socio
-        Socio socioLogueado = Socio.verificar(correo, contrasena);
-        if (socioLogueado != null) {
+        Socio socioLogueado = new Socio(0, "", correo, contrasena, null, null, null);
+        if (socioLogueado.verificar()) {
             JOptionPane.showMessageDialog(panelPrincipal, "Inicio de sesión exitoso como SOCIO.");
             JFrame socioFrame = new JFrame("Panel Socio");
             socioFrame.setContentPane(new FormSocio(socioLogueado).getPanelPrincipal());
@@ -59,6 +61,7 @@ public class FormLogin {
             ((JFrame) SwingUtilities.getWindowAncestor(panelPrincipal)).dispose();
             return;
         }
+
 
 
         JOptionPane.showMessageDialog(panelPrincipal, "Correo o contraseña incorrectos.");

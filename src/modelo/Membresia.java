@@ -1,7 +1,6 @@
 package modelo;
 
 import datos.conexionSocios;
-import modelo.Socio;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -34,15 +33,37 @@ public class Membresia {
     }
 
     // Getters y setters
-    public int getIdMembresia() { return idMembresia; }
-    public String getTipo() { return tipo; }
-    public int getDuracionMeses() { return duracionMeses; }
-    public double getPrecio() { return precio; }
+    public int getIdMembresia() {
+        return idMembresia;
+    }
 
-    public void setIdMembresia(int idMembresia) { this.idMembresia = idMembresia; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
-    public void setDuracionMeses(int duracionMeses) { this.duracionMeses = duracionMeses; }
-    public void setPrecio(double precio) { this.precio = precio; }
+    public void setIdMembresia(int idMembresia) {
+        this.idMembresia = idMembresia;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public int getDuracionMeses() {
+        return duracionMeses;
+    }
+
+    public void setDuracionMeses(int duracionMeses) {
+        this.duracionMeses = duracionMeses;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
 
     @Override
     public String toString() {
@@ -91,4 +112,6 @@ public class Membresia {
         }
     }
 }
+
+
 

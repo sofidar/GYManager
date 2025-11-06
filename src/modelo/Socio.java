@@ -1,14 +1,15 @@
 package modelo;
 
+import datos.conexionSocios;
+import datos.conexionMembresias;
+
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
-import datos.conexionSocios;
-import java.sql.Connection;
-import datos.conexionMembresias;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.List;
 
 public class Socio extends Usuario {
     private Membresia membresia;
@@ -22,78 +23,39 @@ public class Socio extends Usuario {
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
     }
-    public static Socio verificar(String correo, String contrasena) {
+
+    // Implementación del método abstracto verificar()
+    @Override
+    public boolean verificar() {
         conexionSocios conexion = new conexionSocios();
         conexionMembresias conexionMembresias = new conexionMembresias();
-        Socio socio = null;
 
         try (Connection conn = conexion.conexionBBDD()) {
             String sql = "SELECT * FROM socios WHERE correo = ? AND contrasena = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, correo);
-            ps.setString(2, contrasena);
+            ps.setString(1, this.correo);
+            ps.setString(2, this.contrasena);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                int id = rs.getInt("idSocio");
+                this.id = rs.getInt("idSocio");
+                this.nombre = rs.getString("nombre");
                 int idMembresia = rs.getInt("idMembresia");
-                Date fechaInicio = rs.getDate("fechaInicio");
-                Date fechaFin = rs.getDate("fechaFin");
+                Date inicio = rs.getDate("fechaInicio");
+                Date fin = rs.getDate("fechaFin");
 
-                Membresia membresia = conexionMembresias.obtenerMembresia(idMembresia);
+                this.membresia = conexionMembresias.obtenerMembresia(idMembresia);
+                this.fechaInicio = inicio != null ? inicio.toLocalDate() : null;
+                this.fechaFin = fin != null ? fin.toLocalDate() : null;
 
-                socio = new Socio(
-                        id,
-                        rs.getString("nombre"),
-                        correo,
-                        contrasena,
-                        membresia,
-                        fechaInicio != null ? fechaInicio.toLocalDate() : null,
-                        fechaFin != null ? fechaFin.toLocalDate() : null
-                );
+                return true;
             }
 
         } catch (Exception ex) {
             System.err.println("Error al verificar socio: " + ex.getMessage());
         }
 
-        return socio;
-    }
-
-    public void darseDeBaja() {
-        conexionSocios conexion = new conexionSocios();
-        conexion.eliminarSocio(this.getId());
-    }
-
-    public Membresia getMembresia() {
-        return membresia;
-    }
-    public void setMembresia(Membresia membresia) {
-        this.membresia = membresia;
-    }
-
-    public LocalDate getFechaInicio() {
-        return fechaInicio;
-    }
-
-    public LocalDate getFechaFin() {
-        return fechaFin;
-    }
-
-    public void setFechaInicio(LocalDate fechaInicio) {
-        this.fechaInicio = fechaInicio;
-    }
-
-    public void setFechaFin(LocalDate fechaFin) {
-        this.fechaFin = fechaFin;
-    }
-
-    public int getIdSocio() {
-        return getId();
-    }
-
-    public void setIdSocio(int anInt) {
-        setId(anInt);
+        return false;
     }
 
     public boolean crear() {
@@ -101,43 +63,6 @@ public class Socio extends Usuario {
         return conexion.insertarSocio(this);
     }
 
-    public static List<Socio> listar() {
-        List<Socio> socios = new ArrayList<>();
-        conexionSocios conexion = new conexionSocios();
-        conexionMembresias conexionMembresias = new conexionMembresias();
-
-        try (Connection conn = conexion.conexionBBDD()) {
-            String sql = "SELECT s.*, m.tipo AS tipoMembresia FROM socios s JOIN membresias m ON s.idMembresia = m.idMembresia";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                int id = rs.getInt("idSocio");
-                String nombre = rs.getString("nombre");
-                String correo = rs.getString("correo");
-                String contrasena = rs.getString("contrasena");
-                int idMembresia = rs.getInt("idMembresia");
-                Membresia membresia = conexionMembresias.obtenerMembresia(idMembresia);
-
-                Socio socio = new Socio(
-                        id,
-                        nombre,
-                        correo,
-                        contrasena,
-                        membresia,
-                        rs.getDate("fechaInicio").toLocalDate(),
-                        rs.getDate("fechaFin").toLocalDate()
-                );
-
-                socios.add(socio);
-            }
-
-        } catch (Exception ex) {
-            System.err.println("Error al listar socios: " + ex.getMessage());
-        }
-
-        return socios;
-    }
     public boolean eliminar() {
         try {
             conexionSocios conexion = new conexionSocios();
@@ -154,6 +79,84 @@ public class Socio extends Usuario {
             System.err.println("Error al eliminar socio: " + ex.getMessage());
             return false;
         }
+    }
+    public void darseDeBaja() {
+        conexionSocios conexion = new conexionSocios();
+        conexion.eliminarSocio(this.getId());
+    }
+
+    public static List<Socio> listar() {
+        List<Socio> socios = new ArrayList<>();
+        conexionSocios conexion = new conexionSocios();
+        conexionMembresias conexionMembresias = new conexionMembresias();
+
+        try (Connection conn = conexion.conexionBBDD()) {
+            String sql = "SELECT * FROM socios";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("idSocio");
+                String nombre = rs.getString("nombre");
+                String correo = rs.getString("correo");
+                String contrasena = rs.getString("contrasena");
+                int idMembresia = rs.getInt("idMembresia");
+                Date inicio = rs.getDate("fechaInicio");
+                Date fin = rs.getDate("fechaFin");
+
+                Membresia membresia = conexionMembresias.obtenerMembresia(idMembresia);
+
+                Socio socio = new Socio(
+                        id,
+                        nombre,
+                        correo,
+                        contrasena,
+                        membresia,
+                        inicio != null ? inicio.toLocalDate() : null,
+                        fin != null ? fin.toLocalDate() : null
+                );
+
+                socios.add(socio);
+            }
+
+        } catch (Exception ex) {
+            System.err.println("Error al listar socios: " + ex.getMessage());
+        }
+
+        return socios;
+    }
+
+    // Getters y setters
+    public Membresia getMembresia() {
+        return membresia;
+    }
+
+    public void setMembresia(Membresia membresia) {
+        this.membresia = membresia;
+    }
+
+    public LocalDate getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(LocalDate fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public LocalDate getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(LocalDate fechaFin) {
+        this.fechaFin = fechaFin;
+    }
+
+    public int getIdSocio() {
+        return getId();
+    }
+
+    public void setIdSocio(int id) {
+        setId(id);
     }
 }
 
