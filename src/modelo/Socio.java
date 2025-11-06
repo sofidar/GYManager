@@ -44,9 +44,9 @@ public class Socio extends Usuario implements IPersistible, IVerificable {
 
 
     public boolean crear() {
-        conexionSocios conexion = new conexionSocios();
-        return conexion.insertarSocio(this);
+        return new SocioDAO().crear(this);
     }
+
 
 
     public boolean eliminar() {

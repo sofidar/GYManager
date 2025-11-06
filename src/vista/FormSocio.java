@@ -157,6 +157,7 @@ public class FormSocio {
         } catch (ActividadNoDisponibleException ex) {
             JOptionPane.showMessageDialog(panelPrincipal, ex.getMessage());
         }
+        cargarReservas();
     }
 
     private void cargarReservas() {

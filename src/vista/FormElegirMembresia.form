@@ -5,86 +5,119 @@
     <constraints>
       <xy x="20" y="20" width="696" height="400"/>
     </constraints>
-    <properties/>
+    <properties>
+      <background color="-528925"/>
+      <minimumSize width="600" height="400"/>
+      <preferredSize width="800" height="400"/>
+    </properties>
     <border type="none"/>
     <children>
       <component id="2f332" class="javax.swing.JLabel">
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font name="Century Gothic" size="24" style="1"/>
+          <foreground color="-677732"/>
           <text value="Basico"/>
         </properties>
       </component>
       <component id="7d5c3" class="javax.swing.JLabel">
         <constraints>
-          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font name="Century Gothic" size="24" style="1"/>
+          <foreground color="-9198181"/>
           <text value="Especial"/>
         </properties>
       </component>
       <component id="95ba5" class="javax.swing.JLabel">
         <constraints>
-          <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font name="Century Gothic" size="24" style="1"/>
+          <foreground color="-672416"/>
           <text value="Completo"/>
         </properties>
       </component>
       <component id="e40d0" class="javax.swing.JLabel">
         <constraints>
-          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font name="Century Gothic" size="14"/>
+          <foreground color="-677732"/>
           <text value="Pase Gimnasio 3 dias por semana"/>
         </properties>
       </component>
       <component id="23c6c" class="javax.swing.JLabel">
         <constraints>
-          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font name="Century Gothic" size="14"/>
+          <foreground color="-9198181"/>
           <text value="Pase Gimnasio libre + 5 Clases por mes"/>
         </properties>
       </component>
       <component id="da0d7" class="javax.swing.JLabel">
         <constraints>
-          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font name="Century Gothic" size="14"/>
+          <foreground color="-672416"/>
           <text value="Pase gimnasio libre + Clases libres"/>
         </properties>
       </component>
       <component id="7ee59" class="javax.swing.JButton" binding="btnBasico">
         <constraints>
-          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="70" height="35"/>
+          </grid>
         </constraints>
         <properties>
+          <background color="-680817"/>
+          <font name="Century Gothic" size="14"/>
+          <foreground color="-528925"/>
           <text value="Elegir"/>
         </properties>
       </component>
       <component id="b7a6d" class="javax.swing.JButton" binding="btnEspecial">
         <constraints>
-          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="70" height="35"/>
+          </grid>
         </constraints>
         <properties>
+          <background color="-9853543"/>
+          <font name="Century Gothic" size="14"/>
+          <foreground color="-528925"/>
           <text value="Elegir"/>
         </properties>
       </component>
       <component id="28383" class="javax.swing.JButton" binding="btnCompleto">
         <constraints>
-          <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="70" height="35"/>
+          </grid>
         </constraints>
         <properties>
+          <background color="-672683"/>
+          <font name="Century Gothic" size="14"/>
+          <foreground color="-528925"/>
           <text value="Elegir"/>
         </properties>
       </component>
       <component id="739fe" class="javax.swing.JLabel">
         <constraints>
-          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font name="Century Gothic" size="24" style="1"/>
+          <foreground color="-891289"/>
           <text value="Elegir Membresia"/>
         </properties>
       </component>

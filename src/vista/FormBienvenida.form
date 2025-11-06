@@ -3,9 +3,15 @@
   <grid id="27dc6" binding="panelPrincipal" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
+      <xy x="20" y="20" width="600" height="600"/>
     </constraints>
-    <properties/>
+    <properties>
+      <background color="-528925"/>
+      <foreground color="-528925"/>
+      <maximumSize width="600" height="600"/>
+      <minimumSize width="600" height="600"/>
+      <preferredSize width="600" height="400"/>
+    </properties>
     <border type="none"/>
     <children>
       <component id="cc6ac" class="javax.swing.JLabel">
@@ -13,22 +19,35 @@
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font name="Century Gothic" size="36" style="1"/>
+          <foreground color="-891289"/>
           <text value="Bienvenido al Gestor GYM"/>
         </properties>
       </component>
       <component id="5ce60" class="javax.swing.JButton" binding="btnIniciarSesion">
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="7" anchor="0" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="50"/>
+          </grid>
         </constraints>
         <properties>
+          <background color="-674388"/>
+          <font name="Century Gothic" size="28" style="1"/>
+          <foreground color="-528925"/>
           <text value="Iniciar Sesion"/>
         </properties>
       </component>
       <component id="ca4ee" class="javax.swing.JButton" binding="btnCrearUsuario">
         <constraints>
-          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="50"/>
+          </grid>
         </constraints>
         <properties>
+          <background color="-674388"/>
+          <focusable value="false"/>
+          <font name="Century Gothic" size="28" style="1"/>
+          <foreground color="-528925"/>
           <text value="Crear Usuario"/>
         </properties>
       </component>

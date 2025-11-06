@@ -60,5 +60,10 @@ public class Actividad implements IPersistible {
     public Sector getSector() { return sector; }
 
     public int getCapacidad() { return capacidad; }
+    @Override
+    public String toString() {
+        return nombre + " - " + horario + " - " + sector.getNombre();
+    }
+
 }
 

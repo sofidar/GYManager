@@ -36,7 +36,8 @@ public class MembresiaDAO implements IDAO<Membresia> {
 
         } else {
             Socio nuevoSocio = new Socio(0, nombre, correo, contrasena, membresia, inicio, fin);
-            nuevoSocio.crear(); // Este método debería estar delegado en SocioDAO también
+            new SocioDAO().crear(nuevoSocio);
+            // Este método debería estar delegado en SocioDAO también
         }
     }
 

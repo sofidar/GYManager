@@ -5,7 +5,11 @@
     <constraints>
       <xy x="20" y="20" width="500" height="400"/>
     </constraints>
-    <properties/>
+    <properties>
+      <background color="-528925"/>
+      <foreground color="-528925"/>
+      <preferredSize width="600" height="400"/>
+    </properties>
     <border type="none"/>
     <children>
       <component id="44a4b" class="javax.swing.JLabel">
@@ -13,6 +17,8 @@
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font name="Century Gothic" size="24" style="1"/>
+          <foreground color="-9198181"/>
           <text value="Nuevo Usuario"/>
         </properties>
       </component>
@@ -20,14 +26,20 @@
         <constraints>
           <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <background color="-5519168"/>
+          <font name="Century Gothic" size="18"/>
+          <foreground color="-13027532"/>
+        </properties>
       </component>
       <component id="296ca" class="javax.swing.JLabel">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Nombre"/>
+          <font name="Century Gothic" size="18"/>
+          <foreground color="-677732"/>
+          <text value="Nombre:"/>
         </properties>
       </component>
       <component id="6c61" class="javax.swing.JLabel">
@@ -35,7 +47,9 @@
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Correo"/>
+          <font name="Century Gothic" size="18"/>
+          <foreground color="-677732"/>
+          <text value="Correo:"/>
         </properties>
       </component>
       <component id="53ec" class="javax.swing.JLabel">
@@ -43,7 +57,9 @@
           <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Contraseña"/>
+          <font name="Century Gothic" size="18"/>
+          <foreground color="-677732"/>
+          <text value="Contraseña:"/>
         </properties>
       </component>
       <component id="d3766" class="javax.swing.JPasswordField" binding="pwdContrasena">
@@ -52,7 +68,9 @@
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <foreground color="-677732"/>
+        </properties>
       </component>
       <component id="14b02" class="javax.swing.JTextField" binding="txtCorreo">
         <constraints>
@@ -75,6 +93,9 @@
           <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <background color="-9198181"/>
+          <font name="Century Gothic" size="20"/>
+          <foreground color="-528925"/>
           <text value="Registrar"/>
         </properties>
       </component>

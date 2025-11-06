@@ -5,7 +5,11 @@
     <constraints>
       <xy x="20" y="20" width="500" height="400"/>
     </constraints>
-    <properties/>
+    <properties>
+      <background color="-528925"/>
+      <foreground color="-528925"/>
+      <preferredSize width="600" height="400"/>
+    </properties>
     <border type="none"/>
     <children>
       <component id="47c7" class="javax.swing.JLabel">
@@ -13,29 +17,35 @@
           <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font name="Century Gothic" size="28" style="1"/>
+          <foreground color="-891289"/>
           <text value="Iniciar Sesion"/>
         </properties>
       </component>
       <component id="5db05" class="javax.swing.JLabel">
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Correo"/>
+          <font name="Century Gothic" size="18"/>
+          <foreground color="-891289"/>
+          <text value="Correo:"/>
         </properties>
       </component>
       <component id="1f6c3" class="javax.swing.JLabel">
         <constraints>
-          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Contraseña"/>
+          <font name="Century Gothic" size="18"/>
+          <foreground color="-891289"/>
+          <text value="Contraseña:"/>
         </properties>
       </component>
       <component id="3778d" class="javax.swing.JTextField" binding="txtCorreo">
         <constraints>
           <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
+            <preferred-size width="100" height="20"/>
           </grid>
         </constraints>
         <properties/>
@@ -43,16 +53,21 @@
       <component id="71363" class="javax.swing.JPasswordField" binding="pwdContrasena">
         <constraints>
           <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
+            <preferred-size width="100" height="20"/>
           </grid>
         </constraints>
         <properties/>
       </component>
       <component id="d7af1" class="javax.swing.JButton" binding="btnLogin">
         <constraints>
-          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="50"/>
+          </grid>
         </constraints>
         <properties>
+          <background color="-674388"/>
+          <font name="Century Gothic" size="16"/>
+          <foreground color="-528925"/>
           <text value="Entrar"/>
         </properties>
       </component>
