@@ -32,9 +32,7 @@ public class conexionMembresias {
                         rs.getInt("idMembresia"),
                         rs.getString("tipo"),
                         rs.getInt("duracionMeses"),
-                        rs.getDouble("precio"),
-                        null, // fechas se asignan al socio
-                        null
+                        rs.getDouble("precio")
                 ));
             }
 
@@ -56,9 +54,7 @@ public class conexionMembresias {
                         rs.getInt("idMembresia"),
                         rs.getString("tipo"),
                         rs.getInt("duracionMeses"),
-                        rs.getDouble("precio"),
-                        null,
-                        null
+                        rs.getDouble("precio")
                 );
             }
         } catch (Exception e) {

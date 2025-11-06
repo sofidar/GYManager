@@ -17,7 +17,7 @@ public class FormSocio {
     public JLabel lblTipoMembresia;
     public JLabel lblFechaInicio;
     public JLabel lblFechaFin;
-    public JButton btnRenovarMembresia;
+    public JButton btnCambiarMembresia;
     public JButton btnBajaMembresia;
 
     // PESTAÑA ACTIVIDADES
@@ -39,7 +39,7 @@ public class FormSocio {
         actualizarMembresia();
 
         // Evento para renovar membresía
-        btnRenovarMembresia.addActionListener(e -> renovarMembresia());
+        btnCambiarMembresia.addActionListener(e -> abrirFormElegirMembresia());
 
         // Evento para darse de baja
         btnBajaMembresia.addActionListener(e -> bajaMembresia());
@@ -49,48 +49,46 @@ public class FormSocio {
 
     }
 
-    // Mostrar la membresía actual
+
     private void actualizarMembresia() {
         if (membresia != null) {
-            lblTipoMembresia.setText("Tipo: " + membresia.getTipo());
-            lblFechaInicio.setText("Inicio: " + membresia.getFechaInicio().format(DateTimeFormatter.ISO_DATE));
-            lblFechaFin.setText("Fin: " + membresia.getFechaFin().format(DateTimeFormatter.ISO_DATE));
+            lblTipoMembresia.setText("Tipo de Membresía: " + membresia.getTipo());
+            lblFechaInicio.setText("Inicio: " + socio.getFechaInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            lblFechaFin.setText("Fin: " + socio.getFechaFin().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         } else {
-            lblTipoMembresia.setText("Tipo: -");
-            lblFechaInicio.setText("Inicio: -");
-            lblFechaFin.setText("Fin: -");
+            lblTipoMembresia.setText("Sin membresía");
+            lblFechaInicio.setText("-");
+            lblFechaFin.setText("-");
         }
     }
 
-    // Renovar membresía usando la clase Membresia
-    private void renovarMembresia() {
-        if (membresia != null) {
-            membresia.renovar();
-            actualizarMembresia();
-            JOptionPane.showMessageDialog(panelPrincipal, "Membresía renovada!");
-        }
+
+    private void abrirFormElegirMembresia() {
+        JFrame elegirFrame = new JFrame("Elegir nueva membresía");
+        elegirFrame.setContentPane(new FormElegirMembresia(socio).getPanelPrincipal());
+        elegirFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        elegirFrame.pack();
+        elegirFrame.setLocationRelativeTo(null);
+        elegirFrame.setVisible(true);
     }
 
-    // Darse de baja de la membresía (elimina el usuario)
+
     private void bajaMembresia() {
         int confirm = JOptionPane.showConfirmDialog(panelPrincipal,
-                "¿Estás seguro de darte de baja?",
+                "Estás seguro de que querés darte de baja? Esta acción eliminará tu cuenta.",
                 "Confirmar baja",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
-            try {
-                conexionSocios conexion = new conexionSocios();
-                conexion.eliminarSocio(socio.getIdSocio());
+            conexionSocios conexion = new conexionSocios();
+            conexion.eliminarSocio(socio.getId());
 
-                JOptionPane.showMessageDialog(panelPrincipal, "Te has dado de baja correctamente.");
-                // Cierra la ventana del socio
-                SwingUtilities.getWindowAncestor(panelPrincipal).dispose();
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(panelPrincipal, "Error al eliminar usuario: " + e.getMessage());
-            }
+            JOptionPane.showMessageDialog(panelPrincipal, "Tu cuenta fue eliminada correctamente.");
+            JFrame ventana = (JFrame) SwingUtilities.getWindowAncestor(panelPrincipal);
+            ventana.dispose(); // cerrar la ventana actual
         }
     }
+
 
     public JPanel getPanelPrincipal() {
         return panelPrincipal;

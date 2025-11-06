@@ -54,6 +54,34 @@ public class conexionSocios {
             return false;
         }
     }
+    // ------------------------------------------
+    // Traer datos del socio por id
+    public Socio obtenerSocioPorId(int idSocio) {
+        Socio socio = null;
+
+        String sql = "SELECT idMembresia, fechaInicio, fechaFin FROM socios WHERE idSocio = ?";
+
+        try (Connection con = conexionBBDD();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idSocio);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int idMembresia = rs.getInt("idMembresia");
+                LocalDate fechaInicio = rs.getDate("fechaInicio").toLocalDate();
+                LocalDate fechaFin = rs.getDate("fechaFin").toLocalDate();
+
+                Membresia membresia = new Membresia(idMembresia); // o traé más datos si tu clase tiene más atributos
+
+                socio = new Socio(idSocio, null, null, null, membresia, fechaInicio, fechaFin);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return socio;
+    }
 
     // ------------------------------------------
     // Insertar socio
@@ -107,7 +135,7 @@ public class conexionSocios {
     // ------------------------------------------
     // Eliminar socio
     public void eliminarSocio(int idSocio) {
-        String sql = "DELETE FROM socios WHERE idSocios = ?";
+        String sql = "DELETE FROM socios WHERE idSocio = ?";
         try (Connection con = conexionBBDD();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, idSocio);
@@ -121,7 +149,7 @@ public class conexionSocios {
     // Mostrar todos los socios
     public List<Socio> mostrarSocios() {
         List<Socio> lista = new ArrayList<>();
-        String sql = "SELECT s.idSocios, s.nombre, s.correo, s.contrasena, s.idMembresia, s.fechaInicio, s.fechaFin, m.tipo, m.duracionMeses " +
+        String sql = "SELECT s.idSocio, s.nombre, s.correo, s.contrasena, s.idMembresia, s.fechaInicio, s.fechaFin, m.tipo, m.duracionMeses " +
                 "FROM socios s JOIN membresias m ON s.idMembresia = m.idMembresia";
         try (Connection con = conexionBBDD();
              PreparedStatement ps = con.prepareStatement(sql);

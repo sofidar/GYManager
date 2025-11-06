@@ -1,13 +1,16 @@
 package vista;
 
+import datos.conexionMembresias;
 import datos.conexionSocios;
 import datos.conexionEmpleados;
+import modelo.Membresia;
 import modelo.Socio;
 import modelo.Empleado;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -44,10 +47,11 @@ public class FormLogin {
         }
 
         // Si no es empleado, intentar como socio
-        if (verificarSocio(correo, contrasena)) {
+        Socio socioLogueado = verificarSocio(correo, contrasena);
+        if (socioLogueado != null) {
             JOptionPane.showMessageDialog(panelPrincipal, "Inicio de sesión exitoso como SOCIO.");
             JFrame socioFrame = new JFrame("Panel Socio");
-            socioFrame.setContentPane(new FormSocio().getPanelPrincipal());
+            socioFrame.setContentPane(new FormSocio(socioLogueado).getPanelPrincipal());
             socioFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             socioFrame.pack();
             socioFrame.setLocationRelativeTo(null);
@@ -55,6 +59,7 @@ public class FormLogin {
             ((JFrame) SwingUtilities.getWindowAncestor(panelPrincipal)).dispose();
             return;
         }
+
 
         JOptionPane.showMessageDialog(panelPrincipal, "Correo o contraseña incorrectos.");
     }
@@ -74,20 +79,45 @@ public class FormLogin {
         }
     }
 
-    private boolean verificarSocio(String correo, String contrasena) {
+    private Socio verificarSocio(String correo, String contrasena) {
         conexionSocios conexion = new conexionSocios();
+        conexionMembresias conexionMembresias = new conexionMembresias();
+        Socio socio = null;
+
         try (Connection conn = conexion.conexionBBDD()) {
             String sql = "SELECT * FROM socios WHERE correo = ? AND contrasena = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, correo);
             ps.setString(2, contrasena);
             ResultSet rs = ps.executeQuery();
-            return rs.next(); // existe el socio
+
+            if (rs.next()) {
+                int id = rs.getInt("idSocio");
+                int idMembresia = rs.getInt("idMembresia");
+                Date fechaInicio = rs.getDate("fechaInicio");
+                Date fechaFin = rs.getDate("fechaFin");
+
+                Membresia membresia = conexionMembresias.obtenerMembresia(idMembresia);
+
+                socio = new Socio(
+                        id,
+                        rs.getString("nombre"),
+                        correo,
+                        contrasena,
+                        membresia,
+                        fechaInicio != null ? fechaInicio.toLocalDate() : null,
+                        fechaFin != null ? fechaFin.toLocalDate() : null
+                );
+            }
+
         } catch (Exception ex) {
             System.err.println("Error al verificar socio: " + ex.getMessage());
-            return false;
         }
+
+        return socio;
     }
+
+
 
     public JPanel getPanelPrincipal() {
         return panelPrincipal;
