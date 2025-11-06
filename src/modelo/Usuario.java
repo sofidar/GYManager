@@ -1,5 +1,7 @@
 package modelo;
 
+import excepciones.UsuarioNoEncontradoException;
+
 public abstract class Usuario {
     protected int id;
     protected String nombre;
@@ -28,7 +30,7 @@ public abstract class Usuario {
 
     // Método abstracto para implementar en subclases
     public abstract boolean crear();
-    public abstract boolean verificar();
+    public abstract boolean verificar() throws UsuarioNoEncontradoException;
 }
 
 

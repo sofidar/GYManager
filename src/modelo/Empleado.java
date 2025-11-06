@@ -1,11 +1,16 @@
 package modelo;
 import datos.conexionEmpleados;
 import datos.*;
+import interfaces.IPersistible;
+import interfaces.IVerificable;
+import excepciones.UsuarioNoEncontradoException;
+
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class Empleado extends Usuario {
+public class Empleado extends Usuario implements IPersistible, IVerificable {
 
     // Constructor con id
     public Empleado(int id, String nombre, String correo, String contrasena) {
@@ -27,19 +32,19 @@ public class Empleado extends Usuario {
     }
 
     @Override
-    public boolean verificar() {
-        conexionEmpleados conexion = new conexionEmpleados();
-        try (Connection conn = conexion.conexionBBDD()) {
-            String sql = "SELECT * FROM empleados WHERE correo = ? AND contrasena = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, this.correo);
-            ps.setString(2, this.contrasena);
-            ResultSet rs = ps.executeQuery();
-            return rs.next();
-        } catch (Exception ex) {
-            System.err.println("Error al verificar empleado: " + ex.getMessage());
-            return false;
-        }
+    public boolean eliminar() {
+        return false;
+    }
+
+    @Override
+    public boolean verificar() throws UsuarioNoEncontradoException {
+        EmpleadoDAO dao = new EmpleadoDAO();
+        Empleado empleadoCompleto = dao.obtenerPorCredenciales(this.correo, this.contrasena);
+
+        this.id = empleadoCompleto.getId();
+        this.nombre = empleadoCompleto.getNombre();
+
+        return true;
     }
 
 

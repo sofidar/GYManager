@@ -2,6 +2,11 @@ package modelo;
 
 import datos.conexionSocios;
 import datos.conexionMembresias;
+import excepciones.ActividadNoDisponibleException;
+import interfaces.IPersistible;
+import interfaces.IVerificable;
+import excepciones.UsuarioNoEncontradoException;
+import datos.SocioDAO;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -11,7 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Socio extends Usuario {
+public class Socio extends Usuario implements IPersistible, IVerificable {
     private Membresia membresia;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
@@ -24,61 +29,29 @@ public class Socio extends Usuario {
         this.fechaFin = fechaFin;
     }
 
-    // Implementación del método abstracto verificar()
-    @Override
-    public boolean verificar() {
-        conexionSocios conexion = new conexionSocios();
-        conexionMembresias conexionMembresias = new conexionMembresias();
+    public boolean verificar() throws UsuarioNoEncontradoException {
+        SocioDAO dao = new SocioDAO();
+        Socio socioCompleto = dao.obtenerPorCredenciales(this.correo, this.contrasena);
 
-        try (Connection conn = conexion.conexionBBDD()) {
-            String sql = "SELECT * FROM socios WHERE correo = ? AND contrasena = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, this.correo);
-            ps.setString(2, this.contrasena);
-            ResultSet rs = ps.executeQuery();
+        this.id = socioCompleto.id;
+        this.nombre = socioCompleto.nombre;
+        this.membresia = socioCompleto.membresia;
+        this.fechaInicio = socioCompleto.fechaInicio;
+        this.fechaFin = socioCompleto.fechaFin;
 
-            if (rs.next()) {
-                this.id = rs.getInt("idSocio");
-                this.nombre = rs.getString("nombre");
-                int idMembresia = rs.getInt("idMembresia");
-                Date inicio = rs.getDate("fechaInicio");
-                Date fin = rs.getDate("fechaFin");
-
-                this.membresia = conexionMembresias.obtenerMembresia(idMembresia);
-                this.fechaInicio = inicio != null ? inicio.toLocalDate() : null;
-                this.fechaFin = fin != null ? fin.toLocalDate() : null;
-
-                return true;
-            }
-
-        } catch (Exception ex) {
-            System.err.println("Error al verificar socio: " + ex.getMessage());
-        }
-
-        return false;
+        return true;
     }
+
 
     public boolean crear() {
         conexionSocios conexion = new conexionSocios();
         return conexion.insertarSocio(this);
     }
 
+
     public boolean eliminar() {
-        try {
-            conexionSocios conexion = new conexionSocios();
-            Connection conn = conexion.conexionBBDD();
-
-            String sql = "DELETE FROM socios WHERE idSocio = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, this.id);
-            ps.executeUpdate();
-
-            conn.close();
-            return true;
-        } catch (Exception ex) {
-            System.err.println("Error al eliminar socio: " + ex.getMessage());
-            return false;
-        }
+        SocioDAO dao = new SocioDAO();
+        return dao.eliminar(this.id);
     }
     public void darseDeBaja() {
         conexionSocios conexion = new conexionSocios();
@@ -125,6 +98,18 @@ public class Socio extends Usuario {
 
         return socios;
     }
+    public boolean inscribirseAActividad(int idActividad) throws ActividadNoDisponibleException {
+        SocioDAO dao = new SocioDAO();
+        int actividadesActuales = dao.contarActividadesInscriptas(this.id);
+        int maxPermitidas = this.membresia.getMaximoActividades();
+
+        if (actividadesActuales >= maxPermitidas) {
+            throw new ActividadNoDisponibleException("Ya alcanzaste el máximo de actividades permitidas por tu membresía.");
+        }
+
+        return dao.inscribirActividad(this.id, idActividad);
+    }
+
 
     // Getters y setters
     public Membresia getMembresia() {

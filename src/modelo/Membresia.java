@@ -1,10 +1,7 @@
 package modelo;
 
-import datos.conexionSocios;
+import datos.MembresiaDAO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -15,21 +12,23 @@ public class Membresia {
     private String tipo;
     private int duracionMeses;
     private double precio;
+    private int maximoActividades;
 
     // Constructores
-    public Membresia(int idMembresia, String tipo, int duracionMeses, double precio) {
+    public Membresia(int idMembresia, String tipo, int duracionMeses, double precio, int maximoActividades) {
         this.idMembresia = idMembresia;
         this.tipo = tipo;
         this.duracionMeses = duracionMeses;
         this.precio = precio;
+        this.maximoActividades = maximoActividades;
     }
 
     public Membresia(int idMembresia, String tipo, int duracionMeses) {
-        this(idMembresia, tipo, duracionMeses, 0.0);
+        this(idMembresia, tipo, duracionMeses, 0.0, 1);
     }
 
     public Membresia(int idMembresia) {
-        this.idMembresia = idMembresia;
+        this(idMembresia, "", 0, 0.0, 1);
     }
 
     // Getters y setters
@@ -65,6 +64,14 @@ public class Membresia {
         this.precio = precio;
     }
 
+    public int getMaximoActividades() {
+        return maximoActividades;
+    }
+
+    public void setMaximoActividades(int maximoActividades) {
+        this.maximoActividades = maximoActividades;
+    }
+
     @Override
     public String toString() {
         return tipo;
@@ -78,40 +85,23 @@ public class Membresia {
             datos.put("tipo", "Tipo de Membresía: " + tipo);
             datos.put("inicio", "Inicio: " + socio.getFechaInicio().format(formatter));
             datos.put("fin", "Fin: " + socio.getFechaFin().format(formatter));
+            datos.put("actividades", "Máximo de actividades: " + maximoActividades);
         } else {
             datos.put("tipo", "Sin membresía");
             datos.put("inicio", "-");
             datos.put("fin", "-");
+            datos.put("actividades", "-");
         }
         return datos;
     }
 
     // Aplica membresía a socio existente o crea uno nuevo
     public void aplicar(String nombre, String correo, String contrasena, Socio socioExistente, boolean esActualizacion) throws Exception {
-        LocalDate inicio = LocalDate.now();
-        LocalDate fin = inicio.plusMonths(this.duracionMeses);
-
-        conexionSocios conexion = new conexionSocios();
-
-        if (esActualizacion && socioExistente != null) {
-            String sql = "UPDATE socios SET idMembresia = ?, fechaInicio = ?, fechaFin = ? WHERE idSocio = ?";
-            try (Connection con = conexion.conexionBBDD();
-                 PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                ps.setInt(1, this.idMembresia);
-                ps.setDate(2, java.sql.Date.valueOf(inicio));
-                ps.setDate(3, java.sql.Date.valueOf(fin));
-                ps.setInt(4, socioExistente.getId());
-                ps.executeUpdate();
-            }
-            socioExistente.setMembresia(this);
-            socioExistente.setFechaInicio(inicio);
-            socioExistente.setFechaFin(fin);
-        } else {
-            Socio nuevoSocio = new Socio(0, nombre, correo, contrasena, this, inicio, fin);
-            nuevoSocio.crear();
-        }
+        MembresiaDAO dao = new MembresiaDAO();
+        dao.aplicarMembresia(this, nombre, correo, contrasena, socioExistente, esActualizacion);
     }
 }
+
 
 
 

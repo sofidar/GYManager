@@ -3,6 +3,7 @@ package vista;
 import datos.conexionMembresias;
 import datos.conexionSocios;
 import datos.conexionEmpleados;
+import excepciones.UsuarioNoEncontradoException;
 import modelo.Membresia;
 import modelo.Socio;
 import modelo.Empleado;
@@ -34,33 +35,43 @@ public class FormLogin {
         }
 
         // Intentar login como empleado primero
-        Empleado empleado = new Empleado(0, "", correo, contrasena);
-        if (empleado.verificar()) {
-            JOptionPane.showMessageDialog(panelPrincipal, "Inicio de sesión exitoso como EMPLEADO.");
-            JFrame empleadoFrame = new JFrame("Panel Empleado");
-            empleadoFrame.setContentPane(new FormEmpleado().getPanelPrincipal());
-            empleadoFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            empleadoFrame.pack();
-            empleadoFrame.setLocationRelativeTo(null);
-            empleadoFrame.setVisible(true);
-            ((JFrame) SwingUtilities.getWindowAncestor(panelPrincipal)).dispose();
-            return;
+        try {
+            // Intentar login como EMPLEADO
+            Empleado empleado = new Empleado(0, "", correo, contrasena);
+            if (empleado.verificar()) {
+                JOptionPane.showMessageDialog(panelPrincipal, "Inicio de sesión exitoso como EMPLEADO.");
+                JFrame empleadoFrame = new JFrame("Panel Empleado");
+                empleadoFrame.setContentPane(new FormEmpleado().getPanelPrincipal());
+                empleadoFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                empleadoFrame.pack();
+                empleadoFrame.setLocationRelativeTo(null);
+                empleadoFrame.setVisible(true);
+                ((JFrame) SwingUtilities.getWindowAncestor(panelPrincipal)).dispose();
+                return;
+            }
+        } catch (UsuarioNoEncontradoException exEmpleado) {
+            // No mostrar mensaje aún, se intenta como socio
         }
 
-
-        // Si no es empleado, intentar como socio
-        Socio socioLogueado = new Socio(0, "", correo, contrasena, null, null, null);
-        if (socioLogueado.verificar()) {
-            JOptionPane.showMessageDialog(panelPrincipal, "Inicio de sesión exitoso como SOCIO.");
-            JFrame socioFrame = new JFrame("Panel Socio");
-            socioFrame.setContentPane(new FormSocio(socioLogueado).getPanelPrincipal());
-            socioFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            socioFrame.pack();
-            socioFrame.setLocationRelativeTo(null);
-            socioFrame.setVisible(true);
-            ((JFrame) SwingUtilities.getWindowAncestor(panelPrincipal)).dispose();
-            return;
+        try {
+            // Intentar login como SOCIO
+            Socio socioLogueado = new Socio(0, "", correo, contrasena, null, null, null);
+            if (socioLogueado.verificar()) {
+                JOptionPane.showMessageDialog(panelPrincipal, "Inicio de sesión exitoso como SOCIO.");
+                JFrame socioFrame = new JFrame("Panel Socio");
+                socioFrame.setContentPane(new FormSocio(socioLogueado).getPanelPrincipal());
+                socioFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                socioFrame.pack();
+                socioFrame.setLocationRelativeTo(null);
+                socioFrame.setVisible(true);
+                ((JFrame) SwingUtilities.getWindowAncestor(panelPrincipal)).dispose();
+                return;
+            }
+        } catch (UsuarioNoEncontradoException exSocio) {
+            // Si tampoco es socio, mostrar mensaje final
+            JOptionPane.showMessageDialog(panelPrincipal, "Correo o contraseña incorrectos.");
         }
+
 
 
 

@@ -32,7 +32,8 @@ public class conexionMembresias {
                         rs.getInt("idMembresia"),
                         rs.getString("tipo"),
                         rs.getInt("duracionMeses"),
-                        rs.getDouble("precio")
+                        rs.getDouble("precio"),
+                        rs.getInt("maximoActividades")
                 ));
             }
 
@@ -54,7 +55,8 @@ public class conexionMembresias {
                         rs.getInt("idMembresia"),
                         rs.getString("tipo"),
                         rs.getInt("duracionMeses"),
-                        rs.getDouble("precio")
+                        rs.getDouble("precio"),
+                        rs.getInt("maximoActividades")
                 );
             }
         } catch (Exception e) {
